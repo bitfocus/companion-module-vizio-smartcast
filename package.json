@@ -5,10 +5,10 @@
 	"keywords": [
 		"TV"
 	],
-	"manufacturer": "Vizio",
-	"product": "Smartcast",
-	"shortname": "Smartcast",
-	"description": "Smartcast plugin for Companion",
+	"manufacturer": "VIZIO",
+	"product": "SmartCast",
+	"shortname": "smartcast",
+	"description": "VIZIO SmartCast plugin for Companion",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"

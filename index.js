@@ -1,100 +1,88 @@
 var instance_skel = require('../../instance_skel');
 var smartcast = require('vizio-smart-cast');
-var tv;
-var xAuthTokenx;
-var debug;
-var log;
 
 function instance(system, id, config) {
-		var self = this;
+	var self = this;
 
-		// super-constructor
-		instance_skel.apply(this, arguments);
-		self.actions(); // export actions
-		return self;
+	// super-constructor
+	instance_skel.apply(this, arguments);
+
+	// export the actions
+	self.actions();
+
+	return self;
 }
 
 instance.prototype.init = function () {
-		var self = this;
+	var self = this;
 
-		debug = self.debug;
-		log = self.log;
-
-		self.status(self.STATUS_UNKNOWN);
-		if (self.config.host !== undefined) {
-			self.smartcast.discover(device => {
-				console.log(device);
-			});
-			self.tv = new self.smartcast(self.config.host);
-		}
+	self.status(self.STATUS_UNKNOWN);
 };
 
 instance.prototype.updateConfig = function (config) {
-		var self = this;
-		self.config = config;
-
-		if (self.tv !== undefined) {
-			self.tv.destroy();
-			delete self.tv;
-		}
-
-		if (self.config.host !== undefined) {
-			self.tv = new self.smartcast(self.config.host);
-		}
+	var self = this;
+	self.config = config;
 };
 
 // Return config fields for web config
 instance.prototype.config_fields = function () {
-		var self = this;
-		return [
-			{
-				type: 'text',
-				id: 'info',
-				width: 12,
-				label: 'Information',
-				value: 'This module is for vizio-smartcast'
-			},
-			{
-				type: 'textinput',
-				id: 'host',
-				label: 'Target IP',
-				width: 6,
-				default: '192.168.0.100',
-				regex: self.REGEX_IP
-			}
-		]
+	var self = this;
+	return [
+		{
+			type: 'text',
+			id: 'info',
+			width: 12,
+			label: 'Information',
+			value: 'This module will control VIZIO TVs using SmartCast'
+		},
+		{
+			type: 'textinput',
+			id: 'host',
+			label: 'Target IP',
+			width: 6,
+			regex: self.REGEX_IP
+		},
+		{
+			type: 'textinput',
+			id: 'authToken',
+			label: 'Authorization Token',
+			width: 8
+		}
+	];
 };
 
 // When module gets deleted
 instance.prototype.destroy = function () {
 	var self = this;
-	debug("destroy", self.id);
 };
 
 instance.prototype.actions = function (system) {
 	var self = this;
 
-	var actions = {
+	self.system.emit('instance_actions', self.id, {
 		'pair': {
-			label: 'pair device'
+			label: 'Pair device'
 		},
 		'pin': {
-			label: 'enter pin',
+			label: 'Enter pin',
 			options: [{
 				type: 'textinput',
-				label: 'enter pin as displayed on tv',
+				label: 'Enter the pin as displayed on the TV',
 				id: 'pin',
 				regex: self.REGEX_NUMBER
 			}]
 		},
-		'power_on': {
-			label: 'Power on'
-		},
-		'power_off': {
-			label: 'Power off'
+		'power': {
+			label: 'Power state',
+			options: [{
+				type: 'dropdown',
+				label: 'on/off',
+				id: 'power',
+				default: 'power_on',
+				choices: [{ label: 'power on', id: 'power_on' }, { label: 'power off', id: 'power_off' }]
+			}]
 		}
-	};
-		self.setActions(actions);
+	});
 };
 
 
@@ -102,31 +90,37 @@ instance.prototype.action = function (action) {
 	var self = this;
 	var id = action.action;
 	var opt = action.options;
-	var cmd;
+
+	var tv = new smartcast(self.config.host);
+
+	if (self.config.authToken !== null) {
+		self.tv.pairing.useAuthToken(self.config.authToken);
+	}
 
 	switch (id) {
-
 		case 'pair':
 			tv.pairing.initiate();
-			break
+			break;
 
 		case 'enter_pin':
 			self.tv.pairing.pair(opt.pin).then(response => {
-				// log the token to be used for future, authenticated requests
-				self.xAuthTokenx = response.ITEM.AUTH_TOKEN;
-				console.log(response.ITEM.AUTH_TOKEN);
+				self.config.authToken = response.ITEM.AUTH_TOKEN;
+				
+				// Ensure the configuration for the device is persisted.
+				self.system.emit('instance_config_put', self.id, self.config, true);
 			});
-			self.tv.pairing.useAuthToken(self.xAuthTokenx);
-			break
 
-		case 'power_on':
-			self.tv.control.power.on();
-			break
+			self.tv.pairing.useAuthToken(self.config.authToken);
+			break;
 
-		case 'power_off':
-			self.tv.control.power.off();
-			break
+		case 'power':
+			if (opt.lamp === 'power_off') {
+				tv.control.power.off();
+			} else if (opt.lamp === 'power_on') {
+				tv.control.power.on();
+			}
 
+			break;
 	}
 };
 
