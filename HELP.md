@@ -1,11 +1,11 @@
-## VIZIO Smartcast
+# VIZIO SmartCast
 
-> Make sure you pair the device firt!
+> Make sure you pair the device first!
 
 ## Usage
 
 Create a pair action and launch that action
-When connection is succesfull it will display a PIN number on the device
+When connection is successful it will display a PIN number on the device
 Create a enter pin action and fill in the pin code, run the action
 
 It should be paired now (you can see it on the device)
