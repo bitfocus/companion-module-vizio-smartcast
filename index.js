@@ -105,7 +105,7 @@ instance.prototype.action = function (action) {
 		case 'enter_pin':
 			self.tv.pairing.pair(opt.pin).then(response => {
 				self.config.authToken = response.ITEM.AUTH_TOKEN;
-				
+
 				// Ensure the configuration for the device is persisted.
 				self.system.emit('instance_config_put', self.id, self.config, true);
 			});
