@@ -94,7 +94,7 @@ instance.prototype.action = function (action) {
 	var tv = new smartcast(self.config.host);
 
 	if (self.config.authToken !== null) {
-		self.tv.pairing.useAuthToken(self.config.authToken);
+		tv.pairing.useAuthToken(self.config.authToken);
 	}
 
 	switch (id) {
@@ -103,14 +103,14 @@ instance.prototype.action = function (action) {
 			break;
 
 		case 'enter_pin':
-			self.tv.pairing.pair(opt.pin).then(response => {
+			tv.pairing.pair(opt.pin).then(response => {
 				self.config.authToken = response.ITEM.AUTH_TOKEN;
 
 				// Ensure the configuration for the device is persisted.
 				self.system.emit('instance_config_put', self.id, self.config, true);
 			});
 
-			self.tv.pairing.useAuthToken(self.config.authToken);
+			tv.pairing.useAuthToken(self.config.authToken);
 			break;
 
 		case 'power':
