@@ -114,9 +114,9 @@ instance.prototype.action = function (action) {
 			break;
 
 		case 'power':
-			if (opt.lamp === 'power_off') {
+			if (opt.power === 'power_off') {
 				tv.control.power.off();
-			} else if (opt.lamp === 'power_on') {
+			} else if (opt.power === 'power_on') {
 				tv.control.power.on();
 			}
 
