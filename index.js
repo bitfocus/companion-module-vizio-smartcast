@@ -82,12 +82,12 @@ instance.prototype.actions = function (system) {
 				choices: [{ label: 'power on', id: 'power_on' }, { label: 'power off', id: 'power_off' }]
 			}]
 		},
-		'input': {
-			label: 'Active Input',
+		'input-manual': {
+			label: 'Active Input - Manual',
 			options: [{
 				type: 'textinput',
 				label: 'Enter name of the input to make active',
-				id: 'input'
+				id: 'input-manual'
 			}]
 		}
 	});
@@ -130,7 +130,7 @@ instance.prototype.action = function (action) {
 
 			break;
 
-		case 'input':
+		case 'input-manual':
 			tv.input.set(opt.input);
 			break;
 	}
