@@ -124,6 +124,28 @@ instance.prototype.actions = function (system) {
 				label: 'Enter name of the input to make active',
 				id: 'input-manual'
 			}]
+		},
+		'mute': {
+			label: 'Set Mute State',
+			options: [{
+				type: 'dropdown',
+				label: 'on/off',
+				id: 'mute',
+				default: 'mute_off',
+				choices: [{ label: 'mute on', id: 'mute_on' }, { label: 'mute off', id: 'mute_off' }]
+			}]
+		},
+		'volume': {
+			label: 'Set Volume Level',
+			options: [{
+				type: 'number',
+				label: 'Volume level (0-100)',
+				id: 'volume',
+				min: 0,
+				max: 100,
+				default: 50,
+				required: true
+			}]
 		}
 	});
 };
@@ -168,6 +190,18 @@ instance.prototype.action = function (action) {
 		case 'input':
 		case 'input-manual':
 			tv.input.set(opt.input);
+			break;
+
+		case 'mute':
+			if (opt.mute === 'mute_off') {
+				tv.control.volume.unmute();
+			} else if (opt.mute === 'mute_on') {
+				tv.control.volume.mute();
+			}
+			break;
+
+		case 'volume':
+			tv.control.volume.set(opt.volume);
 			break;
 	}
 };
