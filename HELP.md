@@ -14,3 +14,5 @@ This module supports;
 
 * Pairing the device
 * Power on/off
+* Changing the input
+* Adjusting volume and mute status
