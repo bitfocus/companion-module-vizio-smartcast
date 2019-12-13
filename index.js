@@ -17,12 +17,38 @@ instance.prototype.init = function () {
 	var self = this;
 
 	self.status(self.STATUS_UNKNOWN);
+	self.loadInputs();
 };
 
 instance.prototype.updateConfig = function (config) {
 	var self = this;
 	self.config = config;
+	self.loadInputs();
 };
+
+instance.prototype.loadInputs = function () {
+	var self = this;
+	self.INPUTS = [];
+
+	self.log('debug', 'Enumerating inputs.');
+	if (self.config.host && self.config.authToken) {
+		var tv = new smartcast(self.config.host, self.config.authToken);
+		tv.input.list().then(
+			function(result) {
+				for(input of result.ITEMS) {
+					self.log('debug', `Found input "${input.NAME}" with name "${input.VALUE.NAME}"`);
+					self.INPUTS.push({
+						label: `${input.NAME} (${input.VALUE.NAME})`,
+						id: input.NAME
+					});
+				}
+				self.actions(); // export actions
+			},
+			function(result) {
+				self.log('error', `Could not retrieve input list from TV: ${result.name} - ${result.message}`);
+			});
+	}
+}
 
 // Return config fields for web config
 instance.prototype.config_fields = function () {
@@ -81,6 +107,45 @@ instance.prototype.actions = function (system) {
 				default: 'power_on',
 				choices: [{ label: 'power on', id: 'power_on' }, { label: 'power off', id: 'power_off' }]
 			}]
+		},
+		'input': {
+			label: 'Active Input',
+			options: [{
+				type: 'dropdown',
+				label: 'Select the input to make active',
+				id: 'input',
+				choices: self.INPUTS
+			}]
+		},
+		'input-manual': {
+			label: 'Active Input - Manual',
+			options: [{
+				type: 'textinput',
+				label: 'Enter name of the input to make active',
+				id: 'input-manual'
+			}]
+		},
+		'mute': {
+			label: 'Set Mute State',
+			options: [{
+				type: 'dropdown',
+				label: 'on/off',
+				id: 'mute',
+				default: 'mute_off',
+				choices: [{ label: 'mute on', id: 'mute_on' }, { label: 'mute off', id: 'mute_off' }]
+			}]
+		},
+		'volume': {
+			label: 'Set Volume Level',
+			options: [{
+				type: 'number',
+				label: 'Volume level (0-100)',
+				id: 'volume',
+				min: 0,
+				max: 100,
+				default: 50,
+				required: true
+			}]
 		}
 	});
 };
@@ -120,6 +185,23 @@ instance.prototype.action = function (action) {
 				tv.control.power.on();
 			}
 
+			break;
+
+		case 'input':
+		case 'input-manual':
+			tv.input.set(opt.input);
+			break;
+
+		case 'mute':
+			if (opt.mute === 'mute_off') {
+				tv.control.volume.unmute();
+			} else if (opt.mute === 'mute_on') {
+				tv.control.volume.mute();
+			}
+			break;
+
+		case 'volume':
+			tv.control.volume.set(opt.volume);
 			break;
 	}
 };
