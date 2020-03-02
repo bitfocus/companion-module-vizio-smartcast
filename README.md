@@ -1,2 +1,2 @@
 # companion-module-vizio-smartcast
-> https://github.com/heathbar/vizio-smart-cast
+See HELP.md and LICENSE
