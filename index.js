@@ -166,15 +166,26 @@ instance.prototype.action = function (action) {
 			self.tv.pairing.initiate();
 			break;
 
-		case 'enter_pin':
+		case 'pin':
+			self.debug(`Attempting to pair with pin [${opt.pin}]`);
+
 			self.tv.pairing.pair(opt.pin).then(response => {
+				self.debug(`Pairing result: ${JSON.stringify(response)}`);
+				self.log('info', `Authorization token: ${response.ITEM.AUTH_TOKEN}`);
+
 				self.config.authToken = response.ITEM.AUTH_TOKEN;
+				self.saveConfig();
+			}).catch(response => {
+				self.debug(`Pairing failed. ${JSON.stringify(response.STATUS)}`);
+				switch (response.STATUS.RESULT) {
+					case 'PAIRING_DENIED':
+						self.log('error', `Pairing failed. Make sure the provided pin is correct.`);
+						break;
 
-				// Ensure the configuration for the device is persisted.
-				self.system.emit('instance_config_put', self.id, self.config, true);
+					default:
+						self.log('error', `Pairing failed. Result: ${JSON.stringify(response.STATUS)}`);
+				}
 			});
-
-			self.tv.pairing.useAuthToken(self.config.authToken);
 			break;
 
 		case 'power':
