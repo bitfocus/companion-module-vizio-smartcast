@@ -17,7 +17,15 @@ instance.prototype.init = function () {
 	var self = this;
 
 	self.status(self.STATUS_UNKNOWN);
-	self.loadInputs();
+
+	if(self.config.host) {
+		self.tv = new smartcast(self.config.host);
+
+		if (self.config.authToken) {
+			self.tv.pairing.useAuthToken(self.config.authToken);
+			self.loadInputs();
+		}
+	}
 };
 
 instance.prototype.updateConfig = function (config) {
@@ -31,23 +39,20 @@ instance.prototype.loadInputs = function () {
 	self.INPUTS = [];
 
 	self.log('debug', 'Enumerating inputs.');
-	if (self.config.host && self.config.authToken) {
-		var tv = new smartcast(self.config.host, self.config.authToken);
-		tv.input.list().then(
-			function(result) {
-				for(input of result.ITEMS) {
-					self.log('debug', `Found input "${input.NAME}" with name "${input.VALUE.NAME}"`);
-					self.INPUTS.push({
-						label: `${input.NAME} (${input.VALUE.NAME})`,
-						id: input.NAME
-					});
-				}
-				self.actions(); // export actions
-			},
-			function(result) {
-				self.log('error', `Could not retrieve input list from TV: ${result.name} - ${result.message}`);
-			});
-	}
+	self.tv.input.list().then(
+		function(result) {
+			for(input of result.ITEMS) {
+				self.log('debug', `Found input "${input.NAME}" with name "${input.VALUE.NAME}"`);
+				self.INPUTS.push({
+					label: `${input.NAME} (${input.VALUE.NAME})`,
+					id: input.NAME
+				});
+			}
+			self.actions(); // export actions
+		},
+		function(result) {
+			self.log('error', `Could not retrieve input list from TV: ${result.name} - ${result.message}`);
+		});
 }
 
 // Return config fields for web config
@@ -80,6 +85,7 @@ instance.prototype.config_fields = function () {
 // When module gets deleted
 instance.prototype.destroy = function () {
 	var self = this;
+	self.tv = null;
 };
 
 instance.prototype.actions = function (system) {
@@ -150,58 +156,61 @@ instance.prototype.actions = function (system) {
 	});
 };
 
-
 instance.prototype.action = function (action) {
 	var self = this;
 	var id = action.action;
 	var opt = action.options;
 
-	var tv = new smartcast(self.config.host);
-
-	if (self.config.authToken !== null) {
-		tv.pairing.useAuthToken(self.config.authToken);
-	}
-
 	switch (id) {
 		case 'pair':
-			tv.pairing.initiate();
+			self.tv.pairing.initiate();
 			break;
 
-		case 'enter_pin':
-			tv.pairing.pair(opt.pin).then(response => {
+		case 'pin':
+			self.debug(`Attempting to pair with pin [${opt.pin}]`);
+
+			self.tv.pairing.pair(opt.pin).then(response => {
+				self.debug(`Pairing result: ${JSON.stringify(response)}`);
+				self.log('info', `Authorization token: ${response.ITEM.AUTH_TOKEN}`);
+
 				self.config.authToken = response.ITEM.AUTH_TOKEN;
+				self.saveConfig();
+			}).catch(response => {
+				self.debug(`Pairing failed. ${JSON.stringify(response.STATUS)}`);
+				switch (response.STATUS.RESULT) {
+					case 'PAIRING_DENIED':
+						self.log('error', `Pairing failed. Make sure the provided pin is correct.`);
+						break;
 
-				// Ensure the configuration for the device is persisted.
-				self.system.emit('instance_config_put', self.id, self.config, true);
+					default:
+						self.log('error', `Pairing failed. Result: ${JSON.stringify(response.STATUS)}`);
+				}
 			});
-
-			tv.pairing.useAuthToken(self.config.authToken);
 			break;
 
 		case 'power':
 			if (opt.power === 'power_off') {
-				tv.control.power.off();
+				self.tv.control.power.off();
 			} else if (opt.power === 'power_on') {
-				tv.control.power.on();
+				self.tv.control.power.on();
 			}
-
 			break;
 
 		case 'input':
 		case 'input-manual':
-			tv.input.set(opt.input);
+			self.tv.input.set(opt.input);
 			break;
 
 		case 'mute':
 			if (opt.mute === 'mute_off') {
-				tv.control.volume.unmute();
+				self.tv.control.volume.unmute();
 			} else if (opt.mute === 'mute_on') {
-				tv.control.volume.mute();
+				self.tv.control.volume.mute();
 			}
 			break;
 
 		case 'volume':
-			tv.control.volume.set(opt.volume);
+			self.tv.control.volume.set(opt.volume);
 			break;
 	}
 };
