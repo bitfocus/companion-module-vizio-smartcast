@@ -31,7 +31,15 @@ instance.prototype.init = function () {
 instance.prototype.updateConfig = function (config) {
 	var self = this;
 	self.config = config;
-	self.loadInputs();
+
+	if(self.config.host) {
+		self.tv = new smartcast(self.config.host);
+
+		if (self.config.authToken) {
+			self.tv.pairing.useAuthToken(self.config.authToken);
+			self.loadInputs();
+		}
+	}
 };
 
 instance.prototype.loadInputs = function () {
