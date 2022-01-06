@@ -19,7 +19,12 @@ instance.prototype.init = function () {
 	self.status(self.STATUS_UNKNOWN);
 
 	if(self.config.host) {
-		self.tv = new smartcast(self.config.host);
+		if (self.config.firmware === 1) {
+			self.tv = new smartcast(self.config.host);
+		} else {
+			self.tv = new smartcast(`${self.config.host}:9000`);
+		}
+		
 
 		if (self.config.authToken) {
 			self.tv.pairing.useAuthToken(self.config.authToken);
@@ -33,7 +38,11 @@ instance.prototype.updateConfig = function (config) {
 	self.config = config;
 
 	if(self.config.host) {
-		self.tv = new smartcast(self.config.host);
+		if (self.config.firmware === 1) {
+			self.tv = new smartcast(self.config.host);
+		} else {
+			self.tv = new smartcast(`${self.config.host}:9000`);
+		}
 
 		if (self.config.authToken) {
 			self.tv.pairing.useAuthToken(self.config.authToken);
@@ -80,6 +89,16 @@ instance.prototype.config_fields = function () {
 			label: 'Target IP',
 			width: 6,
 			regex: self.REGEX_IP
+		},
+		{
+			type: 'dropdown',
+			label: 'Firmware',
+			id: 'firmware',
+			default: '1',
+			choices: [
+			  { id: '1', label: '>4.0' },
+			  { id: '2', label: '<4.0' }
+			]
 		},
 		{
 			type: 'textinput',
