@@ -19,10 +19,10 @@ instance.prototype.init = function () {
 	self.status(self.STATUS_UNKNOWN);
 
 	if(self.config.host) {
-		if (self.config.firmware === 1) {
-			self.tv = new smartcast(self.config.host);
-		} else {
+		if (self.config.firmware === 2) {
 			self.tv = new smartcast(`${self.config.host}:9000`);
+		} else {
+			self.tv = new smartcast(self.config.host);
 		}
 		
 
@@ -38,10 +38,10 @@ instance.prototype.updateConfig = function (config) {
 	self.config = config;
 
 	if(self.config.host) {
-		if (self.config.firmware === 1) {
-			self.tv = new smartcast(self.config.host);
-		} else {
+		if (self.config.firmware === 2) {
 			self.tv = new smartcast(`${self.config.host}:9000`);
+		} else {
+			self.tv = new smartcast(self.config.host);
 		}
 
 		if (self.config.authToken) {
