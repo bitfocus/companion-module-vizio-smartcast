@@ -10,9 +10,26 @@ Create a enter pin action and fill in the pin code, run the action
 
 It should be paired now (you can see it on the device)
 
-This module supports;
+This module supports:
 
 * Pairing the device
-* Power on/off
+* Power On/Off/Toggle
 * Changing the input
 * Adjusting volume and mute status
+
+Feedbacks:
+
+* Current Power State
+
+Variables:
+
+* Information/Status
+* Current Power State
+* Current Input Selected
+* Cast Name
+* Serial Number
+* Model Name
+* Version
+* Cast Version
+* SCPL Version
+* Resolution
