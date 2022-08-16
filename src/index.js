@@ -108,32 +108,34 @@ instance.prototype.get_information = function() {
 		self.status(self.STATUS_OK);
 		self.STATUS.information = 'Connected to TV.';
 		try {
-			for (let i = 0; i < data.ITEMS.length; i++) {
-				let item = data.ITEMS[i];
-				switch(item.CNAME) {
-					case 'cast_name':
-						self.STATUS.cast_name = item.VALUE;
-						break;
-					case 'serial_number':
-						self.STATUS.serial_number = item.VALUE;
-						break;
-					case 'model_name':
-						self.STATUS.model_name = item.VALUE;
-						break;
-					case 'version':
-						self.STATUS.version = item.VALUE;
-						break;
-					case 'cast_version':
-						self.STATUS.cast_version = item.VALUE;
-						break;
-					case 'scpl_version':
-						self.STATUS.scpl_version = item.VALUE;
-						break;
-					case 'resolution':
-						self.STATUS.resolution = item.VALUE;
-						break;
-					default:
-						break;
+			if (data.ITEMS) {
+				for (let i = 0; i < data.ITEMS.length; i++) {
+					let item = data.ITEMS[i];
+					switch(item.CNAME) {
+						case 'cast_name':
+							self.STATUS.cast_name = item.VALUE;
+							break;
+						case 'serial_number':
+							self.STATUS.serial_number = item.VALUE;
+							break;
+						case 'model_name':
+							self.STATUS.model_name = item.VALUE;
+							break;
+						case 'version':
+							self.STATUS.version = item.VALUE;
+							break;
+						case 'cast_version':
+							self.STATUS.cast_version = item.VALUE;
+							break;
+						case 'scpl_version':
+							self.STATUS.scpl_version = item.VALUE;
+							break;
+						case 'resolution':
+							self.STATUS.resolution = item.VALUE;
+							break;
+						default:
+							break;
+					}
 				}
 			}
 
@@ -197,12 +199,14 @@ instance.prototype.get_state = function() {
 
 	self.tv.power.currentMode().then((data) => {
 		try {
-			for (let i = 0; i < data.ITEMS.length; i++) {
-				let item = data.ITEMS[i];
-				switch(item.CNAME) {
-					case 'power_mode':
-						self.STATUS.power = item.VALUE;
-						break;
+			if (data.ITEMS) {
+				for (let i = 0; i < data.ITEMS.length; i++) {
+					let item = data.ITEMS[i];
+					switch(item.CNAME) {
+						case 'power_mode':
+							self.STATUS.power = item.VALUE;
+							break;
+					}
 				}
 			}
 			self.checkVariables();
@@ -218,12 +222,14 @@ instance.prototype.get_state = function() {
 
 	self.tv.input.current().then(data => {
 		try {
-			for (let i = 0; i < data.ITEMS.length; i++) {
-				let item = data.ITEMS[i];
-				switch(item.CNAME) {
-					case 'current_input':
-						self.STATUS.current_input = item.VALUE;
-						break;
+			if (data.ITEMS) {
+				for (let i = 0; i < data.ITEMS.length; i++) {
+					let item = data.ITEMS[i];
+					switch(item.CNAME) {
+						case 'current_input':
+							self.STATUS.current_input = item.VALUE;
+							break;
+					}
 				}
 			}
 		}
