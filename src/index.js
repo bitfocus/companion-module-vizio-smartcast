@@ -217,6 +217,7 @@ instance.prototype.get_state = function() {
 		}
 	})
 	.catch((error) => {
+		self.setVariable('power', 'Err'); //show error on the button - if the tv gets unplugged or something, the variable won't automatically switch to "Off"
 		self.handleError(error);
 	});
 
