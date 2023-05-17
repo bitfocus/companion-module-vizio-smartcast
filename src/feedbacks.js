@@ -1,21 +1,20 @@
+const { combineRgb } = require('@companion-module/base')
+
 module.exports = {
-	// ##########################
-	// #### Define Feedbacks ####
-	// ##########################
-	setFeedbacks: function () {
+	initFeedbacks: function () {
 		let self = this;
 		let feedbacks = {};
 
-		const foregroundColor = self.rgb(255, 255, 255) // White
-		const backgroundColorRed = self.rgb(255, 0, 0) // Red
-		const backgroundColorGreen = self.rgb(0, 255, 0) // Green
-		const backgroundColorOrange = self.rgb(255, 102, 0) // Orange
+		const foregroundColor = combineRgb(255, 255, 255) // White
+		const backgroundColorRed = combineRgb(255, 0, 0) // Red
+		const backgroundColorGreen = combineRgb(0, 255, 0) // Green
+		const backgroundColorOrange = combineRgb(255, 102, 0) // Orange
 
 		feedbacks.powerState = {
 			type: 'boolean',
-			label: 'Show Power State On Button',
+			name: 'Show Power State On Button',
 			description: 'Indicate if Device is in X Status',
-			style: {
+			defaultStyle: {
 				color: foregroundColor,
 				bgcolor: backgroundColorRed,
 			},
@@ -45,6 +44,6 @@ module.exports = {
 		}
 
 
-		return feedbacks
+		self.setFeedbackDefinitions(feedbacks);
 	}
 }

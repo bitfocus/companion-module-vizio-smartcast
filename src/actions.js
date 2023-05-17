@@ -1,20 +1,22 @@
 module.exports = {
-	// ##########################
-	// #### Instance Actions ####
-	// ##########################
-	setActions: function () {
+	initActions: function () {
 		let self = this;
 		let actions = {};
 
 		actions.pair = {
-			label: 'Pair Device',
-			callback: function(action, bank) {
-				self.tv.pairing.initiate();
+			name: 'Pair Device',
+			options: [],
+			callback: async function(action) {
+				self.log('debug', `Attempting to initiate pairing`);
+				self.tv.pairing.initiate()
+				.catch(response => {
+					self.log('debug', `Pairing failed: ${response}`);
+				});
 			}
 		};
 
 		actions.pin = {
-			label: 'Enter PIN Code',
+			name: 'Enter PIN Code',
 			options: [
 				{
 					type: 'textinput',
@@ -23,7 +25,7 @@ module.exports = {
 					regex: self.REGEX_NUMBER
 				}
 			],
-			callback: function(action, bank) {
+			callback: async function(action) {
 				self.debug(`Attempting to pair with PIN [${action.options.pin}]`);
 
 				self.tv.pairing.pair(action.options.pin).then(response => {
@@ -47,7 +49,7 @@ module.exports = {
 		};
 
 		actions.power = {
-			label: 'Power State',
+			name: 'Power State',
 			options: [
 				{
 					type: 'dropdown',
@@ -61,7 +63,7 @@ module.exports = {
 					]
 				}
 			],
-			callback: function(action, bank) {
+			callback: async function(action) {
 				if (action.options.power === 'power_off') {
 					self.tv.control.power.off();
 				}
@@ -75,7 +77,7 @@ module.exports = {
 		};
 
 		actions.input = {
-			label: 'Active Input',
+			name: 'Active Input',
 			options: [
 				{
 					type: 'dropdown',
@@ -84,13 +86,13 @@ module.exports = {
 					choices: self.INPUTS
 				}
 			],
-			callback: function(action, bank) {
+			callback: async function(action) {
 				self.tv.input.set(action.options.input);
 			}
 		};
 
 		actions.input_manual = {
-			label: 'Active Input - Manual',
+			name: 'Active Input - Manual',
 			options: [
 				{
 					type: 'textinput',
@@ -98,13 +100,13 @@ module.exports = {
 					id: 'input-manual'
 				}
 			],
-			callback: function(action, bank) {
+			callback: async function(action) {
 				self.tv.input.set(action.options.input);
 			}
 		};
 
 		actions.mute = {
-			label: 'Set Mute State',
+			name: 'Set Mute State',
 			options: [
 				{
 					type: 'dropdown',
@@ -114,7 +116,7 @@ module.exports = {
 					choices: [{ label: 'Mute On', id: 'mute_on' }, { label: 'Mute Off', id: 'mute_off' }]
 				}
 			],
-			callback: function(action, bank) {
+			callback: async function(action) {
 				if (action.options.mute === 'mute_off') {
 					self.tv.control.volume.unmute();
 				}
@@ -125,7 +127,7 @@ module.exports = {
 		};
 
 		actions.volume = {
-			label: 'Set Volume Level',
+			name: 'Set Volume Level',
 			options: [
 				{
 					type: 'number',
@@ -137,11 +139,11 @@ module.exports = {
 					required: true
 				}
 			],
-			callback: function(action, bank) {
+			callback: async function(action) {
 				self.tv.control.volume.set(action.options.volume);
 			}
 		}
 
-		return actions
+		self.setActionDefinitions(actions);
 	}
 }

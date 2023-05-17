@@ -1,35 +1,42 @@
+const { combineRgb } = require('@companion-module/base')
+
 module.exports = {
-	setPresets: function () {
+	initPresets: function () {
 		let self = this;
 		let presets = [];
 
-		const foregroundColor = self.rgb(255, 255, 255) // White
-		const foregroundColorBlack = self.rgb(0, 0, 0) // Black
-		const backgroundColorRed = self.rgb(255, 0, 0) // Red
-		const backgroundColorWhite = self.rgb(255, 255, 255) // White
+		const foregroundColor = combineRgb(255, 255, 255) // White
+		const foregroundColorBlack = combineRgb(0, 0, 0) // Black
+		const backgroundColorRed = combineRgb(255, 0, 0) // Red
+		const backgroundColorWhite = combineRgb(255, 255, 255) // White
 
 		presets.push({
+			type: 'button',
 			category: 'Power',
-			label: 'Power Toggle',
-			bank: {
-					style: 'text',
+			name: 'Power Toggle',
+			style: {
 					text: 'Power: $(smartcast:power)',
 					pngalignment: 'center:center',
 					size: '18',
 					color: '16777215',
-					bgcolor: self.rgb(0, 0, 0),
+					bgcolor: combineRgb(0, 0, 0),
 			},
-			actions: [
+			steps: [
 				{
-					action: 'power',
-					options: {
-						power: 'power_toggle'
-					}
+					down: [
+						{
+							actionId: 'power',
+							options: {
+								power: 'power_toggle'
+							}
+						}
+					],
+					up: []
 				}
 			],
 			feedbacks: [
 				{
-					type: 'powerState',
+					feedbackId: 'powerState',
 					options: {
 						state: 1
 					},
@@ -41,6 +48,6 @@ module.exports = {
 			]
 		});
 
-		return presets;
+		self.setPresetDefinitions(presets);
 	}
 }
