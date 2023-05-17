@@ -1725,10 +1725,10 @@ node-releases@^2.0.8:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-2.0.10.tgz#c311ebae3b6a148c89b1813fd7c4d3c024ef537f"
   integrity sha512-5GFldHPXVG/YZmFzJvKK2zDSzPKhEp0+ZR5SVaoSag9fsL5YgHbUHDfnG5494ISANDcK4KwPXAx2xqVEydmd7w==
 
-node-ssdp@^3.2.1:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/node-ssdp/-/node-ssdp-3.3.0.tgz#f19b1faec355f08d29b3ed3f9c626dc80354e6bd"
-  integrity sha512-hFBkfUJytKC2x64jljojAbktG8aOL0C1YuNjCK54ZGBBg2382J3oTuK17T+aFgmy47noKHE5arLnYppo0JjcLw==
+node-ssdp@^3.2.1, node-ssdp@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/node-ssdp/-/node-ssdp-4.0.1.tgz#ea5b2e9a287823b58b3ede348b22a08159cf718f"
+  integrity sha512-uJXkLZVuyaMg1qNbMbGQ6YzNzyOD+NLxYyxIJocPTKTVECPDokOiCZA686jTLXHMUnV34uY/lcUSJ+/5fhY43A==
   dependencies:
     async "^2.6.0"
     bluebird "^3.5.1"
