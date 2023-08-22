@@ -26,16 +26,16 @@ module.exports = {
 				}
 			],
 			callback: async function(action) {
-				self.debug(`Attempting to pair with PIN [${action.options.pin}]`);
+				self.log('debug', `Attempting to pair with PIN [${action.options.pin}]`);
 
 				self.tv.pairing.pair(action.options.pin).then(response => {
-					self.debug(`Pairing result: ${JSON.stringify(response)}`);
+					self.log('debug', `Pairing result: ${JSON.stringify(response)}`);
 					self.log('info', `Authorization token: ${response.ITEM.AUTH_TOKEN}`);
 
 					self.config.authToken = response.ITEM.AUTH_TOKEN;
-					self.saveConfig();
+					self.configUpdated(self.config);
 				}).catch(response => {
-					self.debug(`Pairing failed. ${JSON.stringify(response.STATUS)}`);
+					self.log('debug', `Pairing failed. ${JSON.stringify(response.STATUS)}`);
 					switch (response.STATUS.RESULT) {
 						case 'PAIRING_DENIED':
 							self.log('error', `Pairing failed. Make sure the provided PIN Code is correct.`);
@@ -97,11 +97,13 @@ module.exports = {
 				{
 					type: 'textinput',
 					label: 'Enter name of the input to make active',
-					id: 'input-manual'
+					id: 'input-manual',
+					useVariables: true,
 				}
 			],
 			callback: async function(action) {
-				self.tv.input.set(action.options.input);
+				let input = await self.parseVariablesInString(action.options['input-manual']);
+				self.tv.input.set(input);
 			}
 		};
 
