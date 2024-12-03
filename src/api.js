@@ -85,7 +85,9 @@ module.exports = {
 					id: input.NAME
 				});
 			}
-			self.initActions(); // export actions
+			// Re-export actions and feedbacks after discovering the input list for this device
+			self.initActions()
+			self.initFeedbacks()
 		})
 		.catch((error) => {
 			self.handleError(error);
