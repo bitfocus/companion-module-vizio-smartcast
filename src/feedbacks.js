@@ -68,6 +68,23 @@ module.exports = {
 			},
 		}
 
+		feedbacks.muteState = {
+			type: 'boolean',
+			name: 'Show Mute State on Button',
+			description: 'Indicate if Device is muted',
+			defaultStyle: {
+				bgcolor: backgroundColorRed,
+			},
+			options: [
+			],
+			callback: function (feedback, ctx) {
+				if (self.STATUS) {
+					return self.STATUS.muted
+				}
+				return false
+			}
+		}
+
 
 		self.setFeedbackDefinitions(feedbacks);
 	}

@@ -38,7 +38,8 @@ class VizioInstance extends InstanceBase {
 			version: '',
 			cast_version: '',
 			scpl_version: '',
-			resolution: ''
+			resolution: '',
+			muted: false,
 		};
 
 		this.LAST_ERROR = '';

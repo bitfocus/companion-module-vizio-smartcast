@@ -115,7 +115,11 @@ module.exports = {
 					label: 'on/off',
 					id: 'mute',
 					default: 'mute_off',
-					choices: [{ label: 'Mute On', id: 'mute_on' }, { label: 'Mute Off', id: 'mute_off' }]
+					choices: [
+						{label: 'Mute On', id: 'mute_on' },
+						{label: 'Mute Off', id: 'mute_off'},
+						{label: 'Mute Toggle', id: 'mute_toggle'},
+					]
 				}
 			],
 			callback: async function(action) {
@@ -124,6 +128,9 @@ module.exports = {
 				}
 				else if (action.options.mute === 'mute_on') {
 					self.tv.control.volume.mute();
+				}
+				else {
+					self.tv.control.volume.toggleMute()
 				}
 			}
 		};
