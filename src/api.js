@@ -85,7 +85,9 @@ module.exports = {
 					id: input.NAME
 				});
 			}
-			self.initActions(); // export actions
+			// Re-export actions and feedbacks after discovering the input list for this device
+			self.initActions()
+			self.initFeedbacks()
 		})
 		.catch((error) => {
 			self.handleError(error);
@@ -166,6 +168,32 @@ module.exports = {
 		.catch((error) => {
 			self.handleError(error);
 		});
+
+		if (self.STATUS.power === 1) {
+			self.tv.control.volume.getMuteState().then((data) => {
+				try {
+					if (data.ITEMS) {
+						for (let i = 0; i < data.ITEMS.length; i++) {
+							switch (data.ITEMS[i].CNAME) {
+								case 'mute':
+									self.STATUS.muted = data.ITEMS[i].VALUE.toLowerCase() === "on"
+									self.checkFeedbacks('muteState')
+									break
+							}
+						}
+					}
+				}
+				catch(error) {
+					self.handleError(error);
+				}
+			})
+		}
+		else {
+			if (self.STATUS.muted) {
+				self.STATUS.muted = false
+				self.checkFeedbacks('muteState')
+			}
+		}
 	},
 	
 	handleError: function(err) {
