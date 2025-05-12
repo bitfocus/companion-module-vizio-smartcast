@@ -43,6 +43,48 @@ module.exports = {
 			}
 		}
 
+		feedbacks.inputState = {
+			type: 'boolean',
+			name: 'Show Selected Input on Button',
+			description: 'Indicate if Input X is currently selected',
+			defaultStyle: {
+				color: foregroundColor,
+				bgcolor: backgroundColorGreen,
+			},
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Select Input',
+					id: 'input',
+					choices: self.INPUTS,
+				},
+			],
+			callback: function (feedback, ctx) {
+				if (self.STATUS) {
+					return self.STATUS.current_input === feedback.options.input
+				}
+
+				return false
+			},
+		}
+
+		feedbacks.muteState = {
+			type: 'boolean',
+			name: 'Show Mute State on Button',
+			description: 'Indicate if Device is muted',
+			defaultStyle: {
+				bgcolor: backgroundColorRed,
+			},
+			options: [
+			],
+			callback: function (feedback, ctx) {
+				if (self.STATUS) {
+					return self.STATUS.muted
+				}
+				return false
+			}
+		}
+
 
 		self.setFeedbackDefinitions(feedbacks);
 	}
