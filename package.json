@@ -15,7 +15,7 @@
 		"url": "git+https://github.com/bitfocus/companion-module-vizio-smartcast.git"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^1.2.1"
+		"@companion-module/tools": "^1.5.2"
 	},
 	"resolutions": {
 		"node-ssdp": "^4.0.1"
