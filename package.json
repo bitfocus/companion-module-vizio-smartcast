@@ -1,13 +1,13 @@
 {
 	"name": "vizio-smartcast",
-	"version": "2.1.0",
+	"version": "2.2.0",
 	"main": "index.js",
 	"scripts": {
 		"package": "companion-module-build"
 	},
 	"license": "MIT",
 	"dependencies": {
-		"@companion-module/base": "~1.4.1",
+		"@companion-module/base": "~1.14.1",
 		"vizio-smart-cast": "^1.4.0"
 	},
 	"repository": {

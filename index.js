@@ -83,7 +83,7 @@ class VizioInstance extends InstanceBase {
 		this.stopPolling();
 		this.tv = null;
 
-		this.debug('destroy', this.id);
+		this.log('debug', 'destroy ' + this.id);
 	}
 }
 
