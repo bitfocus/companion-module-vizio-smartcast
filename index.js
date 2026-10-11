@@ -25,8 +25,13 @@ class VizioInstance extends InstanceBase {
 		})
 		
 		this.POLLING_INTERVAL = null;
+		this.POLL_GENERATION = 0;
+		this.destroyed = false;
 
 		this.tv = null;
+		this.INPUTS = [];
+		this.INFO_LOADED = false;
+		this.INPUTS_LOADED = false;
 
 		this.STATUS = {
 			information: '',
@@ -40,6 +45,8 @@ class VizioInstance extends InstanceBase {
 			scpl_version: '',
 			resolution: '',
 			muted: false,
+			volume: '',
+			online: false,
 		};
 
 		this.LAST_ERROR = '';
@@ -51,6 +58,7 @@ class VizioInstance extends InstanceBase {
 
 	async configUpdated(config) {
 		this.config = config
+		this.destroyed = false
 
 		this.initActions();
 		this.initFeedbacks();
@@ -71,11 +79,12 @@ class VizioInstance extends InstanceBase {
 
 	async destroy() {
 		//close out any connections
-		this.tv = null;
+		this.destroyed = true;
 		this.stopPolling();
+		this.tv = null;
 
 		this.debug('destroy', this.id);
 	}
 }
 
-runEntrypoint(VizioInstance, UpgradeScripts);
+runEntrypoint(VizioInstance, UpgradeScripts);

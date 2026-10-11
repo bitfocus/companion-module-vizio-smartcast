@@ -12,7 +12,7 @@ module.exports = {
 			},
 			{
 				type: 'static-text',
-				id: 'info',
+				id: 'info-pairing',
 				width: 12,
 				label: ' ',
 				value: `
@@ -74,6 +74,8 @@ module.exports = {
 						<ul>
 							<li>Current Power State</li>
 							<li>Current Input</li>
+							<li>Volume and Mute State</li>
+							<li>Connection status (so you can tell when the TV is unplugged or off the network)</li>
 						</ul>
 						Enabling polling will send a request to the Device at a continuous interval.
 						<br>
@@ -86,14 +88,16 @@ module.exports = {
 				type: 'checkbox',
 				id: 'polling',
 				label: 'Enable Polling (necessary for feedbacks and variables)',
-				default: false,
+				default: true,
 				width: 3
 			},
 			{
-				type: 'textinput',
+				type: 'number',
 				id: 'pollingrate',
 				label: 'Polling Rate (in ms)',
-				default: 1000,
+				min: 500,
+				max: 60000,
+				default: 2000,
 				width: 3,
 				isVisible: (configValues) => configValues.polling === true,
 			},

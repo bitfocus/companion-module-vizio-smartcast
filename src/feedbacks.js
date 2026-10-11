@@ -33,13 +33,8 @@ module.exports = {
 			callback: function (feedback, bank) {
 				let opt = feedback.options;
 
-				if (self.STATUS) {
-					if (self.STATUS.power == opt.state) {
-						return true;
-					}
-				}
-
-				return false
+				// Don't claim the TV is On or Off while it can't be reached
+				return self.STATUS.online && self.STATUS.power == opt.state
 			}
 		}
 
@@ -56,6 +51,7 @@ module.exports = {
 					type: 'dropdown',
 					label: 'Select Input',
 					id: 'input',
+					default: self.INPUTS.length ? self.INPUTS[0].id : '',
 					choices: self.INPUTS,
 				},
 			],
@@ -85,6 +81,21 @@ module.exports = {
 			}
 		}
 
+
+		feedbacks.connectionLost = {
+			type: 'boolean',
+			name: 'Show Connection Lost on Button',
+			description: 'Indicate if the TV cannot be reached (unplugged, network down, wrong IP)',
+			defaultStyle: {
+				color: foregroundColor,
+				bgcolor: backgroundColorOrange,
+			},
+			options: [
+			],
+			callback: function (feedback, ctx) {
+				return !self.STATUS.online
+			}
+		}
 
 		self.setFeedbackDefinitions(feedbacks);
 	}
