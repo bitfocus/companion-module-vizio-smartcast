@@ -13,6 +13,9 @@ module.exports = {
 		variables.push({ variableId: 'cast_version', 	name: 'Cast Version' });
 		variables.push({ variableId: 'scpl_version', 	name: 'SCPL Version' });
 		variables.push({ variableId: 'resolution', 		name: 'Resolution' });
+		variables.push({ variableId: 'connected', 		name: 'Connected (Yes/No)' });
+		variables.push({ variableId: 'volume', 			name: 'Volume Level' });
+		variables.push({ variableId: 'mute', 			name: 'Mute State (On/Off)' });
 
 		self.setVariableDefinitions(variables);
 	},
@@ -27,7 +30,11 @@ module.exports = {
 			let variableObj = {};
 
 			variableObj.information = self.STATUS.information;
-			variableObj.power = (self.STATUS.power == 1 ? 'On' : 'Off');
+			// 'Offline' means the TV can't be reached at all (unplugged, wrong IP); 'Off' means it answered and is in standby
+			variableObj.power = (!self.STATUS.online ? 'Offline' : (self.STATUS.power == 1 ? 'On' : 'Off'));
+			variableObj.connected = (self.STATUS.online ? 'Yes' : 'No');
+			variableObj.volume = self.STATUS.volume;
+			variableObj.mute = (self.STATUS.muted ? 'On' : 'Off');
 			variableObj.current_input = self.STATUS.current_input;
 			variableObj.cast_name = self.STATUS.cast_name;
 			variableObj.serial_number = self.STATUS.serial_number;
