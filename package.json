@@ -7,7 +7,7 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"@companion-module/base": "~1.4.1",
+		"@companion-module/base": "~1.15.1",
 		"vizio-smart-cast": "^1.4.0"
 	},
 	"repository": {
@@ -15,7 +15,7 @@
 		"url": "git+https://github.com/bitfocus/companion-module-vizio-smartcast.git"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^1.2.1"
+		"@companion-module/tools": "^2.9.0"
 	},
 	"resolutions": {
 		"node-ssdp": "^4.0.1"
